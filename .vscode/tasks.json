@@ -1,8 +1,17 @@
-
 {
     "version": "2.0.0",
     "tasks": [
-
+        {
+            "label": "build-current-project",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-Command",
+                "$project = Get-ChildItem -Path '${fileDirname}' -Filter *.csproj | Select-Object -First 1; if (-not $project) { throw \"No .csproj found in ${fileDirname}\" }; dotnet build $project.FullName /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
         {
             "label": "build-sandbox-Sandbox",
             "command": "dotnet",
@@ -15,7 +24,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week01-Exercise1",
             "command": "dotnet",
@@ -28,7 +36,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week01-Exercise2",
             "command": "dotnet",
@@ -41,7 +48,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week01-Exercise3",
             "command": "dotnet",
@@ -54,7 +60,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week01-Exercise4",
             "command": "dotnet",
@@ -67,7 +72,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week01-Exercise5",
             "command": "dotnet",
@@ -80,7 +84,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week02-Resumes",
             "command": "dotnet",
@@ -93,7 +96,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week02-Journal",
             "command": "dotnet",
@@ -106,7 +108,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week03-Fractions",
             "command": "dotnet",
@@ -119,7 +120,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week03-ScriptureMemorizer",
             "command": "dotnet",
@@ -132,7 +132,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week04-YouTubeVideos",
             "command": "dotnet",
@@ -145,7 +144,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week04-OnlineOrdering",
             "command": "dotnet",
@@ -158,7 +156,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week05-Homework",
             "command": "dotnet",
@@ -171,7 +168,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week05-Mindfulness",
             "command": "dotnet",
@@ -184,7 +180,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week06-Shapes",
             "command": "dotnet",
@@ -197,7 +192,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week06-EternalQuest",
             "command": "dotnet",
@@ -210,7 +204,6 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
         {
             "label": "build-week07-ExerciseTracking",
             "command": "dotnet",
@@ -223,6 +216,5 @@
             ],
             "problemMatcher": "$msCompile"
         },
-
     ]
 }
