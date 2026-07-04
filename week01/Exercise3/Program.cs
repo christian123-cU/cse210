@@ -8,22 +8,28 @@ class Program
         Console.Write("What is the magic number? ");
         int magicNumber = Convert.ToInt32(Console.ReadLine());
 
-        // Ask the user for their guess
+        // Ask the user for their first guess
         Console.Write("What is your guess? ");
         int guess = Convert.ToInt32(Console.ReadLine());
 
-        // Determine if the guess is correct, too high, or too low
-        if (guess < magicNumber)
+        // Keep looping as long as the guess does not match the magic number
+        while (guess != magicNumber)
         {
-            Console.WriteLine("Higher");
+            if (guess < magicNumber)
+            {
+                Console.WriteLine("Higher");
+            }
+            else
+            {
+                Console.WriteLine("Lower");
+            }
+
+            // Ask for another guess
+            Console.Write("What is your guess? ");
+            guess = Convert.ToInt32(Console.ReadLine());
         }
-        else if (guess > magicNumber)
-        {
-            Console.WriteLine("Lower");
-        }
-        else
-        {
-            Console.WriteLine("You guessed it!");
-        }
+
+        // Once the loop ends, the guess must match the magic number
+        Console.WriteLine("You guessed it!");
     }
 }
