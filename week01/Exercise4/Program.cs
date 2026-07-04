@@ -41,9 +41,40 @@ class Program
             }
         }
 
+        // Find the smallest positive number (closest to zero, but still positive)
+        int smallestPositive = int.MaxValue;
+        bool foundPositive = false;
+
+        foreach (int n in numbers)
+        {
+            if (n > 0 && n < smallestPositive)
+            {
+                smallestPositive = n;
+                foundPositive = true;
+            }
+        }
+
         // Display the results
         Console.WriteLine("The sum is: " + sum);
         Console.WriteLine("The average is: " + average);
         Console.WriteLine("The largest number is: " + max);
+
+        if (foundPositive)
+        {
+            Console.WriteLine("The smallest positive number is: " + smallestPositive);
+        }
+        else
+        {
+            Console.WriteLine("There were no positive numbers in the list.");
+        }
+
+        // Sort the numbers and display the sorted list
+        numbers.Sort();
+
+        Console.WriteLine("The sorted list is:");
+        foreach (int n in numbers)
+        {
+            Console.WriteLine(n);
+        }
     }
 }
