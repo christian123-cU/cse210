@@ -4,7 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        
+
         Console.Write("Enter your first name: ");
         string first = Console.ReadLine();
 
@@ -12,6 +12,6 @@ class Program
         string last = Console.ReadLine();
 
         Console.WriteLine($"Your name is {last}, {first} {last}.");
-        
+
     }
 }
