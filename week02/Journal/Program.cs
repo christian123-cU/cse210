@@ -1,6 +1,6 @@
 // Program.cs
 // W02 Project: Journal Program
-// Author: [Your Name]
+// Author: David Oduor Ochanda
 // Course: CSE 210 — Programming with Classes
 //
 // ── What this program does ───────────────────────────────────────────────────
