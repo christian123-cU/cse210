@@ -1,0 +1,50 @@
+W02 Assignment: Explain Abstraction
+
+What is abstraction and why is it important?
+
+Abstraction is basically about hiding the messy details
+of how something works and only showing what someone else
+actually needs to know to use it. When I'm building a class, 
+I'm not trying to explain every internal step to whoever 
+calls my code — I just want to give them a clean, 
+simple way to get the result they need, without them having
+to care about what's happening under the hood.
+
+A big benefit of this is that it makes your code way easier
+to maintain and change later. If all the internal logic is hidden
+behind a method, I can go in and completely rewrite how that method
+works internally, and nothing else in the program breaks, 
+because nobody outside that class was relying on the internal 
+details anyway — they were just calling the method.
+
+A good real-world application of this is something like a 
+"PromptGenerator" class in a journaling app. 
+Right now it might just pull a random prompt from a hardcoded list,
+but down the line you could switch it to pull prompts from a web API
+or database instead. As long as the method signature stays the same, 
+nothing else in the program has to know or care that the internal logic changed.
+
+Here's an example from my program:
+
+public class PromptGenerator
+{
+    private List<string> _prompts = new List<string> {
+        "What made you smile today?",
+        "Describe a challenge you overcame.",
+        "What are you grateful for right now?"
+    };
+
+    public string GetRandomPrompt()
+    {
+        Random rand = new Random();
+        int index = rand.Next(_prompts.Count);
+        return _prompts[index];
+    }
+}
+
+Any other part of my program just calls GetRandomPrompt() 
+and gets a string back. It doesn't know or need to know that 
+the prompt is coming from a hardcoded list — that detail is abstracted away.
+If I later change this to pull from a database, the calling code 
+stays exactly the same. That's the whole point of abstraction — it lets you
+change the internals without breaking everything that depends on it.
