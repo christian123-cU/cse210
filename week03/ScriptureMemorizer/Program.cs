@@ -1,18 +1,32 @@
 using System;
-using System.Collections.Generic;
 
 class Program
 {
     static void Main(string[] args)
     {
-        List<string> words = new List<string> { "The", "Lord", "is", "my", "shepherd" };
-        Scripture scripture = new Scripture(words, "Psalm 23:1");
+      
+        // Build a real Reference object, and pass the raw verse text
+        // as a string — Scripture handles splitting it internally now.
+        Reference reference = new Reference("Psalm", 23, 1);
+        Scripture scripture = new Scripture(reference, "The Lord is my shepherd");
 
-        scripture.Display();
+        // No Hider — call scripture.HideRandomWords() directly, and
+        // use GetDisplayText() + Console.WriteLine() ourselves.
+        Console.WriteLine(scripture.GetDisplayText());
 
-        Hider hider = new Hider();
-        hider.HideWords(scripture.words, 2);
+        while (!scripture.AllWordsHidden())
+        {
+            Console.WriteLine();
+            Console.WriteLine("Press Enter to hide more words, or type 'quit' to exit.");
+            string input = Console.ReadLine();
 
-        scripture.Display();
+            if (input == "quit")
+            {
+                break;
+            }
+
+            scripture.HideRandomWords(3);
+            Console.WriteLine(scripture.GetDisplayText());
+        }
     }
 }
