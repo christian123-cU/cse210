@@ -22,9 +22,7 @@ public class BreathingActivity : Activity
         {
             Console.WriteLine();
             Console.Write("Breathe in...");
-            // Round 1 hand-rolled a countdown loop here - the exact same
-            // "\b \b" erase-and-redraw logic that Activity.ShowCountDown()
-            // already provides. Calling the base method instead means there's
+            // Calling the base method instead means there's
             // only one countdown implementation to maintain, not two.
             ShowCountDown(4);
 

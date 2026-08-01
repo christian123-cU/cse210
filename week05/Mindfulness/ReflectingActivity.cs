@@ -64,7 +64,7 @@ public class ReflectingActivity : Activity
     {
         Console.WriteLine();
         Console.WriteLine(GetRandomPrompt());
-        // Activity.ShowSpinner() already does exactly this animation. Round 1
+        // Activity.ShowSpinner() already does exactly this animation. Your code
         // rewrote the same spinner loop by hand here and again below in
         // DisplayQuestions() - two extra copies of logic that already existed.
         ShowSpinner(3);

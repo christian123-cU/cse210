@@ -33,7 +33,7 @@ public class ListingActivity : Activity
         Console.WriteLine(GetRandomPrompt());
         Console.WriteLine();
         Console.Write("You have a few seconds to think of items...");
-        // Reuse the base class's countdown instead of the round 1 copy of the
+        // Reuse the base class's countdown instead of copy of the
         // same loop.
         ShowCountDown(5);
 
@@ -49,7 +49,7 @@ public class ListingActivity : Activity
     public string GetRandomPrompt()
     {
         // GetRandomItem() lives in Activity and uses one shared Random
-        // instance for the whole program. Round 1 created a new Random()
+        // instance for the whole program. initial code created a new Random()
         // right here every time a prompt was needed, which is the classic
         // bug where back-to-back "random" picks can come out identical.
         return GetRandomItem(_prompts);
