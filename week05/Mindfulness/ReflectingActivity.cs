@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Shows the user a random reflective prompt, then walks them through a
+/// series of random follow-up questions until the requested duration has
+/// elapsed.
+/// </summary>
 public class ReflectingActivity : Activity
 {
-    protected List<string> _prompts;
-    protected List<string> _questions;
+    private List<string> _prompts;
+    private List<string> _questions;
 
     public ReflectingActivity()
+        : base(
+            "Reflecting",
+            "This activity will help you reflect on times in your life when you have shown strength and resilience. This will help you recognize the power you have and how you can use it in other aspects of your life.")
     {
-        _name = "Reflecting";
-        _description = "This activity will help you reflect on times in your life when you have shown strength and resilience. This will help you recognize the power you have and how you can use it in other aspects of your life.";
-
         _prompts = new List<string>
         {
             "Think of a time when you stood up for someone else.",
@@ -45,57 +50,34 @@ public class ReflectingActivity : Activity
 
     public string GetRandomPrompt()
     {
-        Random random = new Random();
-        return _prompts[random.Next(_prompts.Count)];
+        // Same shared helper ListingActivity uses - one Random instance for
+        // the whole program instead of a fresh one per class per call.
+        return GetRandomItem(_prompts);
     }
 
     public string GetRandomQuestion()
     {
-        Random random = new Random();
-        return _questions[random.Next(_questions.Count)];
+        return GetRandomItem(_questions);
     }
 
     public void DisplayPrompt()
     {
         Console.WriteLine();
         Console.WriteLine(GetRandomPrompt());
-
-        string[] animationChars = { "|", "/", "-", "\\" };
-        int i = 0;
-        for (int c = 0; c < 12; c++)
-        {
-            Console.Write(animationChars[i]);
-            Thread.Sleep(250);
-            Console.Write("\b \b");
-            i++;
-            if (i >= animationChars.Length)
-            {
-                i = 0;
-            }
-        }
+        // Activity.ShowSpinner() already does exactly this animation. Round 1
+        // rewrote the same spinner loop by hand here and again below in
+        // DisplayQuestions() - two extra copies of logic that already existed.
+        ShowSpinner(3);
     }
 
     public void DisplayQuestions()
     {
-        DateTime endTime = DateTime.Now.AddSeconds(_duration);
+        DateTime endTime = DateTime.Now.AddSeconds(GetDuration());
         while (DateTime.Now < endTime)
         {
             Console.WriteLine();
             Console.WriteLine(GetRandomQuestion());
-
-            string[] animationChars = { "|", "/", "-", "\\" };
-            int i = 0;
-            for (int c = 0; c < 12; c++)
-            {
-                Console.Write(animationChars[i]);
-                Thread.Sleep(250);
-                Console.Write("\b \b");
-                i++;
-                if (i >= animationChars.Length)
-                {
-                    i = 0;
-                }
-            }
+            ShowSpinner(3);
         }
     }
 }

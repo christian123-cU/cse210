@@ -1,13 +1,30 @@
 using System;
+using System.Collections.Generic;
+using System.Threading;
 
+/// <summary>
+/// Represents a mindfulness activity. Holds the state and behavior shared by
+/// every activity type (name, description, duration, and the pause/animation
+/// helpers), so derived classes only need to implement what's unique to them.
+/// </summary>
 public class Activity
 {
-    protected string _name;
-    protected string _description;
-    protected int _duration;
+    private string _name;
+    private string _description;
+    private int _duration;
 
-    public Activity()
+    // Shared by every derived class that needs a "pick something random from
+    // a list" behavior (see GetRandomItem below). Only one Random is ever
+    // created for the whole program, rather than each activity creating its
+    // own. That matters because Random seeds itself from the system clock -
+    // creating several new Random() instances back-to-back can seed them
+    // identically, so their "random" output ends up repeating.
+    private static readonly Random _random = new Random();
+
+    public Activity(string name, string description)
     {
+        _name = name;
+        _description = description;
     }
 
     public void DisplayStartingMessage()
@@ -33,6 +50,15 @@ public class Activity
         Console.WriteLine();
         Console.WriteLine($"You have completed the {_name} activity for {_duration} seconds.");
         ShowSpinner(3);
+    }
+
+    // _duration is set by DisplayStartingMessage() above, based on user input.
+    // Derived classes need to read it (to know how long to run), but it stays
+    // private here rather than protected - this getter is the only access
+    // point, same pattern as GetStudentName() in the last project.
+    public int GetDuration()
+    {
+        return _duration;
     }
 
     public void ShowSpinner(int seconds)
@@ -61,5 +87,15 @@ public class Activity
             Thread.Sleep(1000);
             Console.Write("\b \b");
         }
+    }
+
+    // Shared by ListingActivity and ReflectingActivity, both of which need to
+    // pull a random string out of one of their lists. Centralizing it here
+    // means there's exactly one Random instance for the whole program (see
+    // the comment on _random above) instead of each class declaring its own.
+    protected static string GetRandomItem(List<string> items)
+    {
+        int index = _random.Next(items.Count);
+        return items[index];
     }
 }

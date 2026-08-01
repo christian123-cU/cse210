@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Prompts the user to list as many items as they can for a random prompt,
+/// until the requested duration has elapsed.
+/// </summary>
 public class ListingActivity : Activity
 {
-    protected int _count;
-    protected List<string> _prompts;
+    private int _count;
+    private List<string> _prompts;
 
     public ListingActivity()
+        : base(
+            "Listing",
+            "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.")
     {
-        _name = "Listing";
-        _description = "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.";
-
         _prompts = new List<string>
         {
             "Who are people that you appreciate?",
@@ -29,12 +33,9 @@ public class ListingActivity : Activity
         Console.WriteLine(GetRandomPrompt());
         Console.WriteLine();
         Console.Write("You have a few seconds to think of items...");
-        for (int i = 5; i > 0; i--)
-        {
-            Console.Write(i);
-            Thread.Sleep(1000);
-            Console.Write("\b \b");
-        }
+        // Reuse the base class's countdown instead of the round 1 copy of the
+        // same loop.
+        ShowCountDown(5);
 
         List<string> items = GetListFromUser();
         _count = items.Count;
@@ -47,15 +48,17 @@ public class ListingActivity : Activity
 
     public string GetRandomPrompt()
     {
-        Random random = new Random();
-        int index = random.Next(_prompts.Count);
-        return _prompts[index];
+        // GetRandomItem() lives in Activity and uses one shared Random
+        // instance for the whole program. Round 1 created a new Random()
+        // right here every time a prompt was needed, which is the classic
+        // bug where back-to-back "random" picks can come out identical.
+        return GetRandomItem(_prompts);
     }
 
     public List<string> GetListFromUser()
     {
         List<string> items = new List<string>();
-        DateTime endTime = DateTime.Now.AddSeconds(_duration);
+        DateTime endTime = DateTime.Now.AddSeconds(GetDuration());
 
         while (DateTime.Now < endTime)
         {
