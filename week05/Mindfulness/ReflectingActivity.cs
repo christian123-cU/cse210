@@ -6,10 +6,16 @@ using System.Collections.Generic;
 /// series of random follow-up questions until the requested duration has
 /// elapsed.
 /// </summary>
-public class ReflectingActivity : Activity
+public sealed class ReflectingActivity : Activity
 {
     private List<string> _prompts;
     private List<string> _questions;
+
+    // Exceeds requirements: same no-repeat-until-exhausted tracking as
+    // ListingActivity, kept separately for prompts and for questions since
+    // they're drawn from two different lists.
+    private List<string> _remainingPrompts = new List<string>();
+    private List<string> _remainingQuestions = new List<string>();
 
     public ReflectingActivity()
         : base(
@@ -50,23 +56,18 @@ public class ReflectingActivity : Activity
 
     public string GetRandomPrompt()
     {
-        // Same shared helper ListingActivity uses - one Random instance for
-        // the whole program instead of a fresh one per class per call.
-        return GetRandomItem(_prompts);
+        return GetRandomItem(_prompts, _remainingPrompts);
     }
 
     public string GetRandomQuestion()
     {
-        return GetRandomItem(_questions);
+        return GetRandomItem(_questions, _remainingQuestions);
     }
 
     public void DisplayPrompt()
     {
         Console.WriteLine();
         Console.WriteLine(GetRandomPrompt());
-        // Activity.ShowSpinner() already does exactly this animation. Your code
-        // rewrote the same spinner loop by hand here and again below in
-        // DisplayQuestions() - two extra copies of logic that already existed.
         ShowSpinner(3);
     }
 

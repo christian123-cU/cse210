@@ -5,10 +5,15 @@ using System.Collections.Generic;
 /// Prompts the user to list as many items as they can for a random prompt,
 /// until the requested duration has elapsed.
 /// </summary>
-public class ListingActivity : Activity
+public sealed class ListingActivity : Activity
 {
     private int _count;
     private List<string> _prompts;
+
+    // Exceeds requirements: tracks which prompts haven't been shown yet this
+    // "round" so GetRandomItem() (in the base class) won't repeat a prompt
+    // until every prompt in _prompts has come up once.
+    private List<string> _remainingPrompts = new List<string>();
 
     public ListingActivity()
         : base(
@@ -33,8 +38,6 @@ public class ListingActivity : Activity
         Console.WriteLine(GetRandomPrompt());
         Console.WriteLine();
         Console.Write("You have a few seconds to think of items...");
-        // Reuse the base class's countdown instead of copy of the
-        // same loop.
         ShowCountDown(5);
 
         List<string> items = GetListFromUser();
@@ -48,11 +51,7 @@ public class ListingActivity : Activity
 
     public string GetRandomPrompt()
     {
-        // GetRandomItem() lives in Activity and uses one shared Random
-        // instance for the whole program. initial code created a new Random()
-        // right here every time a prompt was needed, which is the classic
-        // bug where back-to-back "random" picks can come out identical.
-        return GetRandomItem(_prompts);
+        return GetRandomItem(_prompts, _remainingPrompts);
     }
 
     public List<string> GetListFromUser()

@@ -13,20 +13,34 @@ public class Activity
     private string _description;
     private int _duration;
 
-    // Shared by every derived class that needs a "pick something random from
-    // a list" behavior (see GetRandomItem below). Only one Random is ever
+    //  Only one Random is ever
     // created for the whole program, rather than each activity creating its
-    // own. That matters because Random seeds itself from the system clock -
-    // creating several new Random() instances back-to-back can seed them
-    // identically, so their "random" output ends up repeating.
+    // own - creating several new Random() instances back-to-back can seed
+    // them identically since Random seeds from the system clock.
     private static readonly Random _random = new Random();
 
+    /// <param name="name">Short name of the activity, e.g. "Breathing".</param>
+    /// <param name="description">Explanation shown to the user at the start.</param>
     public Activity(string name, string description)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Activity name is required.", nameof(name));
+        }
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new ArgumentException("Activity description is required.", nameof(description));
+        }
+
         _name = name;
         _description = description;
     }
 
+    /// <summary>
+    /// Shows the activity's name and description, asks the user for a
+    /// session duration, and pauses briefly before the activity begins.
+    /// </summary>
     public void DisplayStartingMessage()
     {
         Console.WriteLine();
@@ -34,14 +48,33 @@ public class Activity
         Console.WriteLine();
         Console.WriteLine(_description);
         Console.WriteLine();
-        Console.Write("How long, in seconds, would you like for your session? ");
-        _duration = int.Parse(Console.ReadLine());
+
+        _duration = PromptForDuration();
 
         Console.WriteLine();
         Console.WriteLine("Get ready...");
         ShowSpinner(3);
     }
 
+    // Repeats the prompt until the user enters a valid, positive whole
+    // number, instead of letting int.Parse crash the program on bad input.
+    private int PromptForDuration()
+    {
+        while (true)
+        {
+            Console.Write("How long, in seconds, would you like for your session? ");
+            if (int.TryParse(Console.ReadLine(), out int seconds) && seconds > 0)
+            {
+                return seconds;
+            }
+
+            Console.WriteLine("Please enter a positive whole number of seconds.");
+        }
+    }
+
+    /// <summary>
+    /// Congratulates the user and reports the activity and duration just completed.
+    /// </summary>
     public void DisplayEndingMessage()
     {
         Console.WriteLine();
@@ -52,15 +85,19 @@ public class Activity
         ShowSpinner(3);
     }
 
-    // _duration is set by DisplayStartingMessage() above, based on user input.
-    // Derived classes need to read it (to know how long to run), but it stays
-    // private here rather than protected - this getter is the only access
-    // point, same pattern as GetStudentName() in the last project.
+    /// <summary>Gets the activity's display name (e.g. for logging purposes).</summary>
+    public string GetName()
+    {
+        return _name;
+    }
+
+    /// <summary>Gets the duration, in seconds, the user selected for the current session.</summary>
     public int GetDuration()
     {
         return _duration;
     }
 
+    /// <summary>Displays a spinning animation for the given number of seconds.</summary>
     public void ShowSpinner(int seconds)
     {
         string[] animationChars = { "|", "/", "-", "\\" };
@@ -79,6 +116,7 @@ public class Activity
         }
     }
 
+    /// <summary>Displays a numeric countdown animation for the given number of seconds.</summary>
     public void ShowCountDown(int seconds)
     {
         for (int i = seconds; i > 0; i--)
@@ -89,13 +127,27 @@ public class Activity
         }
     }
 
-    // Shared by ListingActivity and ReflectingActivity, both of which need to
-    // pull a random string out of one of their lists. Centralizing it here
-    // means there's exactly one Random instance for the whole program (see
-    // the comment on _random above) instead of each class declaring its own.
-    protected static string GetRandomItem(List<string> items)
+    /// <summary>
+    /// Picks a random item from <paramref name="allItems"/> without repeating
+    /// any item until every item in the list has been returned once.
+    /// <paramref name="remainingItems"/> is the "not yet used this round"
+    /// pool for a particular list - callers keep this list as a field and
+    /// pass the same instance in on every call. When the pool runs dry, it
+    /// refills from <paramref name="allItems"/> and the cycle starts over.
+    /// This is what backs the "no repeats until everything's been shown"
+    /// behavior in ListingActivity and ReflectingActivity.
+    /// </summary>
+    protected static string GetRandomItem(List<string> allItems, List<string> remainingItems)
     {
-        int index = _random.Next(items.Count);
-        return items[index];
+        if (remainingItems.Count == 0)
+        {
+            remainingItems.AddRange(allItems);
+        }
+
+        int index = _random.Next(remainingItems.Count);
+        string item = remainingItems[index];
+        remainingItems.RemoveAt(index);
+
+        return item;
     }
 }
