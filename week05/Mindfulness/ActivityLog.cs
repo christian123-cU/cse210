@@ -9,7 +9,7 @@ using System.IO;
 /// </summary>
 public class ActivityLog
 {
-    private const string _LogFilePath = "activity_log.txt";
+    private const string LogFilePath = "activity_log.txt";
 
     private Dictionary<string, int> _runCounts = new Dictionary<string, int>();
     private Dictionary<string, int> _totalSeconds = new Dictionary<string, int>();
@@ -59,7 +59,7 @@ public class ActivityLog
             lines.Add($"{entry.Key},{entry.Value},{_totalSeconds[entry.Key]}");
         }
 
-        File.WriteAllLines(_LogFilePath, lines);
+        File.WriteAllLines(LogFilePath, lines);
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class ActivityLog
     /// </summary>
     public void Load()
     {
-        if (!File.Exists(_LogFilePath))
+        if (!File.Exists(LogFilePath))
         {
             return;
         }
